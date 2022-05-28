@@ -1,10 +1,10 @@
-import { Image,  Text, View, FlatList, TouchableOpacity} from 'react-native'
+import { ActivityIndicator, Image,  Text, View, FlatList, TouchableOpacity} from 'react-native'
 import React, { useEffect, useState } from 'react'
-import Ionicons from 'react-native-vector-icons/Ionicons'
 import ProfileCard from '../../components/profile/profileCard/profileCard'
 import styles from './profileScreenStyles'
-const ProfileScreen = ({navigation}) => {
-
+const ProfileScreen = ({navigation, route}) => {
+const payload = route.params;
+console.log(payload);
   const userInfo = {
     userName: 'Nico',
     profilePic: require('../../../assets/users/user-8.jpg'),
@@ -28,26 +28,14 @@ const ProfileScreen = ({navigation}) => {
     
     return (
     <FlatList 
-    ListHeaderComponent={
+    ListHeaderComponent={ isLoading ? <ActivityIndicator/> : 
     <View style={styles.container} >
       <View style= {styles.header}>
-          <TouchableOpacity onPress={()=>navigation.navigate('header',{screen:'Favorites'})}>
-        <View style={styles.buttonContainer}>
-            <Text style={styles.buttonText}>Favoritos</Text>
-            <Ionicons name='star-outline' size={30} color='#E6EAF4'/>
-        </View>
-          </TouchableOpacity>
-          <TouchableOpacity>
-        <View style={styles.buttonContainer}>
-            <Text style={styles.buttonText}>Configuracion</Text>
-            <Ionicons name='settings-outline' size={30} color='#E6EAF4'/>
-        </View>
-          </TouchableOpacity>
       </View>
       <Image source={userInfo.profilePic} style={styles.avatar}></Image>
       <View style={styles.body}>
         <View style={styles.userInfo}>
-          <Text style={styles.userName}>{userInfo.userName}</Text>
+          <Text style={styles.userName}>{payload.user_name}</Text>
           <Text style={styles.userBio}>{userInfo.bio}</Text>
           <View style={styles.stats}>
             <TouchableOpacity>

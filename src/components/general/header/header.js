@@ -10,6 +10,9 @@ const Header = ({navigation}) => {
       <TouchableOpacity onPress={()=>{navigation.navigate('header',{screen:'Notifications'})}}>
         <Ionicons style={styles.icon} name='notifications' size={30}/>
       </TouchableOpacity>
+      <TouchableOpacity onPress={()=>{navigation.navigate('header',{screen: 'Favorites'})}}>
+        <Ionicons style={styles.icon} name='star' size={30}/>
+      </TouchableOpacity>
       <TouchableOpacity onPress={()=>{navigation.navigate('header',{screen: 'Chat'})}}>
         <Ionicons style={styles.icon} name='chatbubble' size={30}/>
       </TouchableOpacity>

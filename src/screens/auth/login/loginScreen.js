@@ -5,42 +5,48 @@ import FormButton from '../../../components/auth/formButton/formButton'
 import SocialButton from '../../../components/auth/socialButton/socialButton'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import styles from './loginScreenStyles'
-
+import useForm from '../../../hooks/useForm'
 const LoginScreen = ({navigation}) => {
-    const [email, setEmail] = useState();
-    const [password, setPassword] = useState();
+    const initialState ={
+      email:'',
+      password:'',
+    }
+    const onSubmit= values => {
+      console.log(values);
+    }
+    const {subscribe, inputs, handleSubmit} = useForm(initialState,onSubmit)
   return (
     <View style={styles.container}>
-        <Ionicons name="logo-xbox" size={50} color='white' style={{margin:10, padding:5}} />
+        <Ionicons name="logo-xbox" size={50} color='white'  />
         <Text style={{fontSize:45,color:'white' ,fontWeight:'bold', margin:10}}>World Gamers</Text>
         <Text style={{fontSize:20,color:'white' ,fontWeight:'100', margin:10}}>Inicio de sesión</Text>
         <FormInput
-        labelValue={email}
+        labelValue={inputs.email}
         placeHolderText="Correo electronico"
         iconType="user"
         keyboardType="email-address"
         autoCapitalize= "none"
         autoCorrect={false}
-        onChangeText= {(userEmail) => setEmail(userEmail)}
+        onChangeText ={subscribe('email')}
         />
 
         <FormInput
-            labelValue={password}
-            onChangeText= {(userPassword) => setPassword(userPassword)}
+            labelValue={inputs.password}
+            onChangeText={subscribe('password')}
             placeHolderText="Contraseña"
             iconType="lock"
             secureTextEntry={true}
         />
         <FormButton
             buttonTitle="Iniciar Sesion"
-            onPress = {()=>{navigation.replace('app',{screen:'Home'})}}
+            onPress = {handleSubmit}
         />
         <SocialButton
         buttonTitle={"Inicia sesión con Facebook"}
         btnType="facebook"
         color="#4867aa"
         backgroundColor={"#e6eaf4"}
-        onPress={()=>{}}
+        onPress={()=>{navigation.replace('app',{screen:'Home'})}}
       />
 
       <SocialButton

@@ -8,13 +8,13 @@ const HomeScreen = ({ navigation }) => {
 
   const [isLoading, setLoading] = useState(true);
   const [data, setData] = useState([]);
-    
   useEffect(() => {
-    fetch('https://ecf3ba35-e391-4a86-90d8-60b4f15ac40d.mock.pstmn.io/posts')
-      .then((Response) => Response.json())
+    fetch('https://62918ba8cd0c91932b646bdc.mockapi.io/api/v1/posts')
+    .then((Response) => Response.json())
       .then((responseJson) => {
         setData(responseJson);
         setLoading(false)
+        console.log(data);
       })
       .catch((error) => console.error(error))
   }, [])
@@ -26,17 +26,17 @@ const HomeScreen = ({ navigation }) => {
       {isLoading ?  <ActivityIndicator color={'white'} size={'large'} />  :
           <FlatList
             data={data}
-            renderItem={({ item }) => 
+           renderItem={({ item }) => 
             <PostCard 
             item={item} 
             handleLike={()=>{navigation.navigate('LikeModalScreen')}} 
             handleComment={()=>{navigation.navigate('CommentModalScreen')}} 
+            navigation={navigation}
             />
           }
             keyExtractor={item => item.id}
             showsVerticalScrollIndicator={false}
-          />
-        }
+          />}
         </Container>
     </>
   )

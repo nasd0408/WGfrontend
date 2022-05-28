@@ -2,10 +2,9 @@ import { StyleSheet } from "react-native"
 import { windowHeight } from "../../../utils/Dimentions"
 const styles = StyleSheet.create({
     container: {
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     alignItems: 'center',
     padding: 20,
-    paddingTop: 50,
     backgroundColor: '#060422',
     height: windowHeight
   },

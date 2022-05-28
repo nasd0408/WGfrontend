@@ -24,7 +24,7 @@ return (
                         ? 'home'
                         : 'home-outline'
                     }
-                    else if (route.name === 'Profile'){
+                    else if (route.name === 'UserProfile'){
                         iconName = focused 
                         ? 'person'
                         : 'person-outline'
@@ -49,7 +49,7 @@ return (
         >
             <Tab.Screen name="Home" component={HomeScreen}></Tab.Screen>
             <Tab.Screen name="Search" component={SearchScreen}></Tab.Screen>
-            <Tab.Screen name="Profile" component={ProfileScreen}></Tab.Screen>
+            <Tab.Screen name="UserProfile" component={ProfileScreen} initialParams={{user_name:"Nico"}}></Tab.Screen>
             <Tab.Screen name="Post" component={PostScreen}></Tab.Screen>
         </Tab.Navigator>
 )}
