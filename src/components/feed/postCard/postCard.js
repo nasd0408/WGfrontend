@@ -1,6 +1,5 @@
-import axios, { Axios } from 'axios';
-import React, { useState, useEffect } from 'react'
-import { Text, FlatList } from 'react-native'
+import React, { useState } from 'react'
+import { Text, FlatList, TouchableOpacity } from 'react-native'
 import Modal from "react-native-modal";
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { 
@@ -20,27 +19,29 @@ import {
   ModalContainer,
   ModalItem,
   ListHeaderContainer,
+  EstadisticaText,
+  EstadisticaWrapper,
 
 } from '../feedStyles'  
 
 const PostCard = ({item, navigation}) => {
-
+const postData = item.posts[0];
 const [modalLikeVisible, setModalLikeVisible] = useState(false)
 const [modalCommentVisible, setModalCommentVisible] = useState(false)
 
         
         
-const likeIcon = item.liked ? 'heart' : 'heart-outline'
-const likeIconColor = item.liked ? '#C00C86' : 'black'
-const favIcon = item.fav ? 'star' : 'star-outline'
-const favIconColor = item.fav? '#C00C86' : 'black'
+const likeIcon = postData.liked ? 'heart' : 'heart-outline'
+const likeIconColor = postData.liked ? '#C00C86' : 'black'
+const favIcon = postData.fav ? 'star' : 'star-outline'
+const favIconColor = postData.fav? '#C00C86' : 'black'
 let likeText 
 let commentText
 
-const likeArray = item.likes
+const likeArray = postData.likes
 const likeCount = likeArray.length
 
-const commentArray = item.comments
+const commentArray = postData.comments
 const commentCount= commentArray.length
 if (likeCount == '1'){
     likeText = '1 Like'
@@ -57,7 +58,7 @@ if (commentCount == '1'){
     commentText = 'Comment';
 }
 
-  return (
+return (
     <>
     <Modal
      isVisible={modalLikeVisible}
@@ -108,33 +109,41 @@ if (commentCount == '1'){
     </Modal>
     <Card>
       <UserInfo
-      onPress={()=>navigation.navigate('header',{screen:'Profile', params:{user_name: item.userName}})}
+      onPress={()=>navigation.navigate('header',{screen:'Profile', params:{user_id: postData.userId}})}
       >
         <UserImg source={{uri: `${item.userImg}`}} ></UserImg>
         <UserInfoText>  
           <UserName>{item.userName}</UserName>
-          <PostTime>{item.postTime}</PostTime>
+          <PostTime>{postData.createdAt}</PostTime>
         </UserInfoText> 
         <Opciones onPress={()=>alert('Opciones de pubblicacion')}>
           <Ionicons name='ellipsis-vertical' size={25} />
         </Opciones> 
       </UserInfo>
       <PostText>
-        {item.post}
+        {postData.post}
       </PostText>
-        {item.postImg != 'none' ?  <PostImg source={{uri: `${item.postImg}`}} />: <Divider/>}
+        {postData.postImg != 'none' ?  <PostImg source={{uri: `${postData.postImg}`}} />: <Divider/>}
+        <EstadisticaWrapper>
+          <TouchableOpacity onPress={()=>setModalLikeVisible(true)}>
+            <EstadisticaText>{likeText}</EstadisticaText>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={()=>setModalCommentVisible(true)}>
+            <EstadisticaText>{commentText}</EstadisticaText>
+          </TouchableOpacity>
+        </EstadisticaWrapper>
       <InteractionWrapper >
-        <Interaction onPress={()=>setModalLikeVisible(true)} active ={item.liked}>
+        <Interaction onPress={()=>{}} active ={postData.liked}>
           <Ionicons name={likeIcon} size={25}  color={likeIconColor} />
-          <InteractionText active={item.liked} >{likeText}</InteractionText>
+          <InteractionText active={postData.liked} >Me gusta</InteractionText>
         </Interaction>
-        <Interaction onPress={()=>setModalCommentVisible(true)}>
+        <Interaction onPress={()=>{}}>
           <Ionicons name='md-chatbubble-outline' size={25} />
-          <InteractionText>{commentText}</InteractionText>
+          <InteractionText>Comentar</InteractionText>
         </Interaction >
-        <Interaction active={item.fav}>
+        <Interaction active={postData.fav}>
           <Ionicons name={favIcon} size={25} color={favIconColor}/>
-          <InteractionText active={item.fav}> Favorito </InteractionText>
+          <InteractionText active={postData.fav}> Favorito </InteractionText>
         </Interaction>
       </InteractionWrapper>
     </Card>

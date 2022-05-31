@@ -42,7 +42,15 @@ export const PostTime = styled.Text`
     font-size:12px;
     color: #666;
 `;
-
+export const EstadisticaText = styled.Text`
+    font-size:14px;
+    color: #666;
+    padding-left: 15px;
+`;
+export const EstadisticaWrapper = styled.View `
+    flex-direction:row;
+    padding-top:5px;
+`;
 export const PostText = styled.Text`
     font-size: 14px;
     padding-horizontal:15px;
@@ -51,6 +59,7 @@ export const PostImg= styled.Image`
     width: 100%;
     height:250px;
     margin-top:15px;
+    
 `;
 
 export const Divider = styled.View`
@@ -64,7 +73,7 @@ export const Divider = styled.View`
 export const InteractionWrapper =styled.View`
     flex-direction:row;
     justify-content: space-around;
-    padding:15px
+    padding:10px 15px 15px 15px;
 `;
 export const Interaction = styled.TouchableOpacity`
     flex-direction: row;

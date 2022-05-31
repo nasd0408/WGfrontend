@@ -1,30 +1,21 @@
-import { ActivityIndicator, FlatList, View } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import { ActivityIndicator, FlatList } from 'react-native'
+import React from 'react'
 import PostCard from '../../../components/feed/postCard/postCard'
 import { Container } from './homeScreenStyles'
-import Header from '../../../components/general/header/header'
+import { useFetch } from '../../../hooks/useFetch'
 
 const HomeScreen = ({ navigation }) => {
 
-  const [isLoading, setLoading] = useState(true);
-  const [data, setData] = useState([]);
-  useEffect(() => {
-    fetch('https://62918ba8cd0c91932b646bdc.mockapi.io/api/v1/posts')
-    .then((Response) => Response.json())
-      .then((responseJson) => {
-        setData(responseJson);
-        setLoading(false)
-        console.log(data);
-      })
-      .catch((error) => console.error(error))
-  }, [])
-
+  const {data,isLoading, error }= useFetch('https://62918ba8cd0c91932b646bdc.mockapi.io/api/v1/users')
+  if (error){
+    console.error(error);
+  }
   return (
     <>
       
       <Container>
       {isLoading ?  <ActivityIndicator color={'white'} size={'large'} />  :
-          <FlatList
+         <FlatList
             data={data}
            renderItem={({ item }) => 
             <PostCard 
@@ -36,7 +27,7 @@ const HomeScreen = ({ navigation }) => {
           }
             keyExtractor={item => item.id}
             showsVerticalScrollIndicator={false}
-          />}
+        /> } 
         </Container>
     </>
   )
