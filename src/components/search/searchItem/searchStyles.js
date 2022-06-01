@@ -36,7 +36,7 @@ export const PostTime = styled.Text`
 export const PostText = styled.Text`
     font-size: 14px;
     padding-horizontal:15px;
-    margin-top:50px;
+    margin-top:5px;
     overflow: hidden; 
 `;
 export const PostImg = styled.Image`

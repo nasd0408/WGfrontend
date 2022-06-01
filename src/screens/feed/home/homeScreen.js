@@ -6,17 +6,18 @@ import { useFetch } from '../../../hooks/useFetch'
 
 const HomeScreen = ({ navigation }) => {
 
-  const {data,isLoading, error }= useFetch('https://62918ba8cd0c91932b646bdc.mockapi.io/api/v1/users')
+  const {data, error, loading }= useFetch('https://62918ba8cd0c91932b646bdc.mockapi.io/api/v1/users')
   if (error){
     console.error(error);
   }
+
   return (
     <>
       
       <Container>
-      {isLoading ?  <ActivityIndicator color={'white'} size={'large'} />  :
+      {loading ?  <ActivityIndicator color={'white'} size={'large'} />  :
          <FlatList
-            data={data}
+            data={data.map(item=>item.posts).flat()}
            renderItem={({ item }) => 
             <PostCard 
             item={item} 

@@ -3,6 +3,7 @@ import NotificationScreen from "../../../screens/notifications/notificationsScre
 import ChatScreen from "../../../screens/chat/chatScreen"
 import ProfileScreen from "../../../screens/profile/profileScreen";
 import FavoritesScreen from "../../../screens/favorites/favoritesScreen"
+import PostDetailScreen from "../../../screens/post/postDetail/postDetailScreen";
 const Stack = createNativeStackNavigator();
 const HeaderStack = () => {
   return (
@@ -15,6 +16,7 @@ headerStyle : { backgroundColor: '#5D08DA'}
     <Stack.Screen name="Chat" component={ChatScreen}></Stack.Screen>
     <Stack.Screen name="Favorites" component={FavoritesScreen}></Stack.Screen>
     <Stack.Screen name="Profile" component={ProfileScreen}></Stack.Screen>
+    <Stack.Screen name="Post" component={PostDetailScreen}></Stack.Screen>
 </Stack.Navigator>
   )
 }
