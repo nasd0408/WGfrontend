@@ -22,48 +22,50 @@ import {
 } from '../feedStyles'  
 
 const PostCard = ({item, navigation}) => {
-const postData = item;
 
-const {data, error, loading} = useFetch('https://62918ba8cd0c91932b646bdc.mockapi.io/api/v1/users/'+item.userId)
-if(error){
-  console.log(error);
-}
-        
-const likeIcon = postData.liked ? 'heart' : 'heart-outline'
-const likeIconColor = postData.liked ? '#C00C86' : 'black'
-const favIcon = postData.fav ? 'star' : 'star-outline'
-const favIconColor = postData.fav? '#C00C86' : 'black'
-let likeText 
-let commentText
+      
+    const postData = item;
 
-const likeArray = postData.likes
-const likeCount = likeArray.length
+    const {data, error, loading} = useFetch('https://62918ba8cd0c91932b646bdc.mockapi.io/api/v1/users/'+item.userId)
+    if(error){
+      console.log(error);
+    }
+            
+    const likeIcon = postData.liked ? 'heart' : 'heart-outline'
+    const likeIconColor = postData.liked ? '#C00C86' : 'black'
+    const favIcon = postData.fav ? 'star' : 'star-outline'
+    const favIconColor = postData.fav? '#C00C86' : 'black'
+    let likeText 
+    let commentText
 
-const commentArray = postData.comments
-const commentCount= commentArray.length
+    const likeArray = postData.likes
+    const likeCount = likeArray.length
 
-function truncateString(str, num) {
-  if (str.length <= num) {
-    return str
-  }
-  return str.slice(0, num) + '...'
-}
+    const commentArray = postData.comments
+    const commentCount= commentArray.length
 
-if (likeCount == '1'){
-    likeText = '1 Like'
-}else if ( likeCount > 1){
-    likeText = likeCount + ' Likes';
-}else {
-    likeText = 'like';
-}
-if (commentCount == '1'){
-    commentText = '1 Comment'
-}else if ( commentCount > 1){
-    commentText = commentCount + ' Comments';
-}else {
-    commentText = 'Comment';
-}
-return (
+    function truncateString(str, num) {
+      if (str.length <= num) {
+        return str
+      }
+      return str.slice(0, num) + '...'
+    };
+
+    if (likeCount == '1'){
+        likeText = '1 Like'
+    }else if ( likeCount > 1){
+        likeText = likeCount + ' Likes';
+    }else {
+        likeText = 'like';
+    }
+    if (commentCount == '1'){
+        commentText = '1 Comment'
+    }else if ( commentCount > 1){
+        commentText = commentCount + ' Comments';
+    }else {
+        commentText = 'Comment';
+    }
+    return (
     
     <Card>
       {loading ? <ActivityIndicator/> :<>

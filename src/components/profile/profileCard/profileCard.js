@@ -3,10 +3,12 @@ import React from 'react'
 import { Card, PostImg, PostText, PostTime, TouchableContainer, UserInfo, UserInfoContainer } from './profileSyles'
 
 
-const ProfileCard = ({item}) => {
+const ProfileCard = ({item, navigation}) => {
   return (
     <Card>
-    <TouchableContainer>
+    <TouchableContainer 
+            onPress={()=>navigation.navigate('header',{screen:'Post', params:{user_id: item.userId, post_id: item.id}})}
+            >
 
       <UserInfoContainer>
           <PostTime>{item.createdAt}</PostTime>

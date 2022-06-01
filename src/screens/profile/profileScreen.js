@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import ProfileCard from '../../components/profile/profileCard/profileCard'
 import styles from './profileScreenStyles'
 import ProfileHeader from '../../components/profile/profileHeader/profileHeader'
-const ProfileScreen = ({route}) => {
+const ProfileScreen = ({route, navigation}) => {
   const userInfo = {
     "createdAt": "2022-05-30T05:12:01.134Z",
     "userName": "Nicolás Sira",
@@ -144,7 +144,8 @@ const ProfileScreen = ({route}) => {
       </View>
 }
       data={posts}
-      renderItem={({item}) => <ProfileCard item={item}/>}
+      renderItem={({item}) => <ProfileCard item={item}
+        navigation={navigation}/>}
       keyExtractor={item => item.id}
       showsVerticalScrollIndicator ={false}
       numColumns={2}
