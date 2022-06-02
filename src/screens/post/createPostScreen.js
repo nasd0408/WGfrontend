@@ -1,46 +1,91 @@
-import { StyleSheet, View } from 'react-native'
-import React from 'react'
-import { InputField, InputWrapper } from './createPostScreenStyles'
+import {  Image, View, Platform, TextInput, Text } from 'react-native'
+import React, { useState, useEffect } from 'react';
+import styles from './createPostScreenStyles'
+import * as ImagePicker from 'expo-image-picker';
+import axios from 'axios';
 import ActionButton from 'react-native-action-button';
 import Icon from 'react-native-vector-icons/Ionicons'
-import { windowHeight } from '../../utils/Dimentions';
+
 const PostScreen = () => {
+  const [image, setImage] = useState(null);
+  const [desc, setDesc] = useState('');
+  const [tags, setTags] = useState('')
+  const createdAt = new Date()
+
+  const handleSubmit = (e) =>{
+    e.preventDefault();
+    const postData={
+      postImg: image,
+      desc: desc,
+      createdAt: createdAt,
+      tags:tags,
+      
+    };
+    axios.post("Api***", postData).then((response)=> {
+      console.log(response.status);
+      console.log(response.data);
+    })
+  }
+  const pickImage = async () => {
+    // No permissions request is necessary for launching the image library
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    console.log(result);
+
+    if (!result.cancelled) {
+      setImage(result.uri);
+    }
+  };
+  
+
   return (
-    <View style={styles.container}>
-      <InputWrapper>
-        <InputField
-          placeholder="Que estas pensando?"
-          multiline
-          numbersOfLines={4}
-        />
-      </InputWrapper>
-      <ActionButton buttonColor="#060422" offsetY={130}>
-          <ActionButton.Item buttonColor='#C00C86' title="Toma una foto!" onPress={() => console.log("notes tapped!")}>
-            <Icon name="camera-outline" style={styles.actionButtonIcon} />
+    <View style={styles.background}>
+      <Text style={styles.title}>Crea una publicacion</Text>
+      <View style={styles.createCard}>
+        <View>
+          <TextInput
+          multiline={true}
+          placeholder={'Descripcion de la publicacion!'}
+          value={desc}
+          onChangeText={setDesc}
+          style={styles.input}
+          ></TextInput>
+          <TextInput
+          placeholder={'Etiquetas!'}
+          value={tags}
+          onChangeText={setTags}
+          style={styles.input}
+          ></TextInput>
+        </View>
+        <View style={styles.imageContainer} >
+          {image && <Image source={{uri: image}} style={styles.image}/>}
+        </View>
+      </View>
+      <ActionButton buttonColor="#C00C86" offsetY={130}>
+          <ActionButton.Item 
+          buttonColor='#E6EAF4' 
+          title="Limpiar campos" 
+          onPress={()=>{
+            setDesc('');
+            setImage(null);
+            setTags('');
+          }}>
+            <Icon name="trash-outline" style={[styles.actionButtonIcon, {color:'black'}]}  />
           </ActionButton.Item>
-          <ActionButton.Item buttonColor='#1D13A4' title="Elige desde galeria!" onPress={() => {}}>
+          <ActionButton.Item buttonColor='#1D13A4' title="Elige desde galeria!" onPress={pickImage}>
             <Icon name="md-images-outline" style={styles.actionButtonIcon} />
           </ActionButton.Item>
-          <ActionButton.Item buttonColor='#F77F00' title="Publica!" onPress={() => alert('Publicacion creada')}>
+          <ActionButton.Item buttonColor='#F77F00' title="Publica!" onPress={handleSubmit}>
             <Icon name="md-create-outline" style={styles.actionButtonIcon} />
           </ActionButton.Item>
         </ActionButton>
-    </View>
-  )
+   </View>  )
 }
 
 export default PostScreen
 
-const styles = StyleSheet.create({
-  container:{
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: windowHeight
-  },
-  actionButtonIcon: {
-    fontSize: 20,
-    height: 22,
-    color: 'white',
-
-  },
-})
