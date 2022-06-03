@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import ProfileCard from '../../components/profile/profileCard/profileCard'
 import styles from './profileScreenStyles'
 import ProfileHeader from '../../components/profile/profileHeader/profileHeader'
-const ProfileScreen = ({route}) => {
+const ProfileScreen = ({route, navigation}) => {
   const userInfo = {
     "createdAt": "2022-05-30T05:12:01.134Z",
     "userName": "Nicolás Sira",
@@ -112,7 +112,7 @@ const ProfileScreen = ({route}) => {
      <FlatList 
     ListHeaderComponent={ isLoading ? <ActivityIndicator/> : 
     <View style={styles.container} >
-      <ProfileHeader self={route.params.user_id}/>      
+      <ProfileHeader self={route.params.user_id} navigation={navigation} userData={userData}/>      
       <Image source={{uri: `${userData.userImg}`}} style={styles.avatar}></Image>
       <View style={styles.body}>
         <View style={styles.userInfo}>
