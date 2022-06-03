@@ -6,6 +6,7 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import styles from "./EditProfileScreenStyles";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import useForm from "../../hooks/useForm";
+import i18n from "../../i18n/i18n"
 const EditProfileScreen = ({ route, navigation }) => {
   const [changed, setChanged] = useState(false);
   const [openFecha, setOpenfecha] = useState(false);
@@ -50,7 +51,7 @@ const EditProfileScreen = ({ route, navigation }) => {
           marginBottom: 10,
         }}
       >
-        Editar Perfil
+        {i18n.t("editProfile")}
       </Text>
       <FormInput
         labelValue={inputs.name}
