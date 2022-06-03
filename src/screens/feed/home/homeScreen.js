@@ -1,25 +1,53 @@
-import { ActivityIndicator, FlatList } from 'react-native'
-import React from 'react'
+import { ActivityIndicator, FlatList, Button } from 'react-native'
+import React ,{useState, useEffect}from 'react'
 import PostCard from '../../../components/feed/postCard/postCard'
 import { Container } from './homeScreenStyles'
-import { useFetch } from '../../../hooks/useFetch'
+import axios from 'axios'
+import * as SecureStore from 'expo-secure-store'
+
 
 const HomeScreen = ({ navigation }) => {
-
-  const {data, error, loading }= useFetch('https://62918ba8cd0c91932b646bdc.mockapi.io/api/v1/users')
-  if (error){
-    console.error(error);
+  
+  const [token, setToken] = useState(null) 
+  const [data, setData] = useState([])
+  const [loading, setLoading] = useState(true)
+  
+  async function getValueFor(key) {
+    let result = await SecureStore.getItemAsync(key);
+    if (result) {
+     setToken(result);
+    } else {
+      alert('No values stored under that key.');
+    }
   }
-
+  
+  useEffect(()=>{
+    getValueFor('userToken')
+    console.log(token);
+  },[])
+    let config ={
+    headers:{
+      "Accept":"application/json",
+      "Authorization": 'Bearer '+token,
+    }}
+  useEffect(() => {
+    if (token===null){}
+    else {
+    axios.get('https://medinajosedev.com/public/api/publicaciones', config)
+    .then(response => {setData(response.data)})
+    .catch(e=>console.error(e))
+    .finally(()=>setLoading(false))}
+  }, [token])
   return (
     <>
       
       <Container>
       {loading ?  <ActivityIndicator color={'white'} size={'large'} />  :
          <FlatList
-            data={data.map(item=>item.posts).flat()}
+            data={data}
            renderItem={({ item }) => 
             <PostCard 
+            token={token}
             item={item} 
             handleLike={()=>{navigation.navigate('LikeModalScreen')}} 
             handleComment={()=>{navigation.navigate('CommentModalScreen')}} 
@@ -27,7 +55,7 @@ const HomeScreen = ({ navigation }) => {
             />
           }
             keyExtractor={item => item.id}
-            showsVerticalScrollIndicator={false}
+              showsVerticalScrollIndicator={false}
         /> } 
         </Container>
     </>
