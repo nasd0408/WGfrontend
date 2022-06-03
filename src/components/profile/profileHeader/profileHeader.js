@@ -5,7 +5,7 @@ import styles from './profileHeaderStyles'
 import AuthContext from '../../../navigation/context/AuthContext'
 export default  ProfileHeader=({self,  navigation, userData} )=> {
   const {signOut} = useContext(AuthContext)
-   if(self === "Nico"){
+   if(self === "yo"){
        return (
         <View style= {styles.header}>
           

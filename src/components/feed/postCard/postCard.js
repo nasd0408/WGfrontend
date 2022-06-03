@@ -71,10 +71,13 @@ const PostCard = ({item, navigation, token}) => {
     return (
     
     <Card>
-      {loading ? <View style={{height:300, width:300, justifyContent:'center'}}><ActivityIndicator size={'large'} color={'#5D08DA'}/></View> :<>
-      
+      {loading 
+      ?<View style={{height:300, width:300, justifyContent:'center'}}>
+         <ActivityIndicator size={'large'} color={'#5D08DA'}/>
+      </View> 
+      :<>
       <UserInfo
-      onPress={()=>navigation.navigate('header',{screen:'Profile', params:{user_id: postData.userId}})}
+      onPress={()=>navigation.navigate('header',{screen:'Profile', params:{user_id: postData.user_id, token:token}})}
       >
         <UserImg source={{uri: `${data.imagen}`}} ></UserImg> 
         <UserInfoText>  
@@ -87,7 +90,7 @@ const PostCard = ({item, navigation, token}) => {
       </UserInfo>
         
       <TouchableOpacity 
-            onPress={()=>navigation.navigate('header',{screen:'Post', params:{user_id: postData.userId, post_id: postData.id}})}
+            onPress={()=>navigation.navigate('header',{screen:'Post', params:{user_id: postData.user_id, post_id: postData.id, token:token}})}
 
       >
       <PostText>

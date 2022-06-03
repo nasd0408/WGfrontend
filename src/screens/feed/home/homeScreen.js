@@ -8,6 +8,7 @@ import * as SecureStore from 'expo-secure-store'
 
 const HomeScreen = ({ navigation }) => {
   
+  
   const [token, setToken] = useState(null) 
   const [data, setData] = useState([])
   const [loading, setLoading] = useState(true)
@@ -20,10 +21,8 @@ const HomeScreen = ({ navigation }) => {
       alert('No values stored under that key.');
     }
   }
-  
   useEffect(()=>{
     getValueFor('userToken')
-    console.log(token);
   },[])
     let config ={
     headers:{

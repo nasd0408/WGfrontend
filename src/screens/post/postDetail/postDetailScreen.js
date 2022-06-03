@@ -1,7 +1,8 @@
-import { View, Text, Image, TouchableOpacity, ActivityIndicator,ScrollView } from 'react-native'
+import { View, Text, Image, TouchableOpacity, ActivityIndicator,FlatList } from 'react-native'
 import React, {useState, useEffect} from 'react'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import styles from './postDetailScreenStyles'
+import axios from 'axios'
 
 const PostDetailScreen = ({route,navigation}) => {
     const [data, setData] = useState([])
@@ -9,57 +10,91 @@ const PostDetailScreen = ({route,navigation}) => {
     const [likes, setLikes] = useState([])
     const [comments, setComments] = useState([])
     const [userData, setUserData] = useState([])
-    const [select, setSelect] = useState('comments')
-    const [selectColor, setSelectColor] = useState(true)
-    useEffect(()=>{
-        fetch('https://62918ba8cd0c91932b646bdc.mockapi.io/api/v1/users/' + route.params.user_id + '/post/' + route.params.post_id)
-        .then(response => response.json())
-        .then((responseJson)=>{
-            setData(responseJson)
-            setLikes(responseJson.likes)
-            setComments(responseJson.comments)
+    const [selection, setSelection] = useState(false)
+    const [listdata, setListdata] = useState([])
+    let config ={
+        headers:{
+          "Accept":"application/json",
+          "Authorization": 'Bearer '+ route.params.token
+        }}
+      useEffect(()=>{
+        axios.get('https://medinajosedev.com/public/api/usuarios/'+route.params.user_id, config)
+        .then(response => {setUserData(response.data)})
+        .catch(e=>console.error(e))
+        .finally(()=>setIsLoading(false))
+
+        axios.get('https://medinajosedev.com/public/api/publicaciones/'+route.params.post_id, config)
+        .then(response => {setData(response.data)})
+        .catch(e=>console.error(e))
+        .finally(()=>setIsLoading(false))
+        
+        axios.get('https://medinajosedev.com/public/api/comentarios/publicacion/'+route.params.post_id, config)
+        .then(response => {setComments(response.data)
+            setListdata(response.data)
         })
         .catch(e=>console.error(e))
         .finally(()=>setIsLoading(false))
-        fetch('https://62918ba8cd0c91932b646bdc.mockapi.io/api/v1/users/' + route.params.user_id)
-        .then(response=> response.json())
-        .then(responseJson=> setUserData(responseJson))
+        
+        axios.get('https://medinajosedev.com/public/api/megusta/publicacion/'+route.params.post_id, config)
+        .then(response => {setLikes(response.data)
+            console.log(likes);
+        })
         .catch(e=>console.error(e))
         .finally(()=>setIsLoading(false))
         
-    },[])
-    const likeIcon = data.liked ? 'heart' : 'heart-outline'
-    const likeIconColor = data.liked ? '#C00C86' : 'black'
-    const favIcon = data.fav ? 'star' : 'star-outline'
-    const favIconColor = data.fav? '#C00C86' : 'black'
 
-    function ShowSelect () {
-            if (select === 'likes'){
-                setSelectColor(true)
-                return (
-                    likes.map(like=><Text>{like}</Text>)
-                )
-            }else if (select=== 'comments'){
-                setSelectColor(false)
+      },[])
+    const likeIcon = data.isLiked ? 'heart' : 'heart-outline'
+    const likeIconColor = data.isLiked ? '#C00C86' : 'black'
+    const favIcon = data.isFavorite ? 'star' : 'star-outline'
+    const favIconColor = data.isFavorite? '#C00C86' : 'black'
+    
+    const ChoseRender =(item)=>{
+        if (selection){
+            return(
+                RenderLikes(item)
+            )
+        }else if (!selection){
+            return (RenderComments(item))
+        }
+    }
 
-                return (
-                    comments.map(comment=><Text>{comment}</Text>)
-                )
-            }
-        
+    const RenderLikes = (item) =>{
+        return(
+            <View style={{flexDirection:'row'}}>
+                <Ionicons name='heart' color={'#C00C86'} size={20}/>
+                <Text style={styles.commentName}>{item.user.name}</Text>
+            </View>
+        )
+    }
+
+    const RenderComments= (item)=>{
+        return(
+            <View style={styles.commentsList}>
+                <Text style={styles.commentName}>{item.user.name}:</Text>
+                <Text style={styles.commentDesc}>{item.descripcion}</Text>
+            </View>
+        )
     }
     return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <View style={styles.container}>
         {isLoading 
         ? <ActivityIndicator/> 
-        : <>      
-            <TouchableOpacity onPress={()=>navigation.navigate('header',{screen:'Profile', params:{user_id: userData.id}})}>
-                <Text style={styles.title}> Publicacion de: {userData.userName} </Text>
+        :    
+         <FlatList
+            style={styles.FlatList}
+            data={listdata}
+            renderItem={({item})=>ChoseRender(item)}
+            keyExtractor={(item)=>item.id}
+            ListHeaderComponent={
+                <>
+                  <TouchableOpacity onPress={()=>navigation.navigate('header',{screen:'Profile', params:{user_id: userData.id}})}>
+                <Text style={styles.title}> Publicacion de: {userData.name} </Text>
             </TouchableOpacity>
-            <Image style={styles.postImg} source={{uri: `${data.postImg}`}}/>
+            <Image style={styles.postImg} source={{uri: `${data.imagen}`}}/>
             <Text style={styles.fecha}>Fecha de pubblicacion</Text>
-            <Text style={styles.fecha}> {data.createdAt} </Text>
-            <Text style={styles.desc}>{data.desc}</Text>
+            <Text style={styles.fecha}> {data.created_at} </Text>
+            <Text style={styles.desc}>{data.descripcion}</Text>
             <View style={styles.interactionWrapper}>
                 <TouchableOpacity >
                     <Ionicons size={30} color={likeIconColor} name={likeIcon} />
@@ -69,12 +104,30 @@ const PostDetailScreen = ({route,navigation}) => {
                     </TouchableOpacity>
             </View>
             <View style ={styles.selectContainer}>
-                <TouchableOpacity style={selectColor ? styles.select: styles.selectActive} onPress={()=> setSelect('comments')}><Text>Comments {comments.length}</Text></TouchableOpacity>
-                <TouchableOpacity style={!selectColor ? styles.select: styles.selectActive} onPress={()=> setSelect('likes')}><Text>Likes {likes.length}</Text></TouchableOpacity>
+                <TouchableOpacity 
+                style={selection ? styles.select: styles.selectActive} 
+                onPress={()=> {setSelection(false)
+                    setListdata(comments)
+                }}>
+                    <Text>Comments {comments.length}</Text>
+                </TouchableOpacity>
+                <TouchableOpacity 
+                style={!selection ? styles.select: styles.selectActive} 
+                onPress={()=> {setSelection(true)
+                setListdata(likes)}}>
+                    <Text>Likes {likes.length}</Text>
+                </TouchableOpacity>
             </View>
-            <ShowSelect/>
-        </>}
-    </ScrollView>
+           
+                </>
+            }
+            showsHorizontalScrollIndicator={false}
+            showsVerticalScrollIndicator={false}
+            ></FlatList> 
+          
+            
+        }
+    </View>
   )
 }
 
