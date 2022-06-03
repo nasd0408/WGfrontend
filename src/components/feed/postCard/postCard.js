@@ -1,7 +1,7 @@
-import React, { useState } from 'react'
-import { Text, FlatList, TouchableOpacity } from 'react-native'
-import Modal from "react-native-modal";
+import React from 'react'
+import { TouchableOpacity,ActivityIndicator } from 'react-native'
 import Ionicons from 'react-native-vector-icons/Ionicons'
+import { useFetch } from '../../../hooks/useFetch'
 import { 
   Card, 
   UserInfoText,
@@ -16,121 +16,83 @@ import {
   Interaction,
   InteractionText,
   Opciones,
-  ModalContainer,
-  ModalItem,
-  ListHeaderContainer,
   EstadisticaText,
   EstadisticaWrapper,
 
 } from '../feedStyles'  
 
 const PostCard = ({item, navigation}) => {
-const postData = item.posts[0];
-const [modalLikeVisible, setModalLikeVisible] = useState(false)
-const [modalCommentVisible, setModalCommentVisible] = useState(false)
 
-        
-        
-const likeIcon = postData.liked ? 'heart' : 'heart-outline'
-const likeIconColor = postData.liked ? '#C00C86' : 'black'
-const favIcon = postData.fav ? 'star' : 'star-outline'
-const favIconColor = postData.fav? '#C00C86' : 'black'
-let likeText 
-let commentText
+      
+    const postData = item;
 
-const likeArray = postData.likes
-const likeCount = likeArray.length
+    const {data, error, loading} = useFetch('https://62918ba8cd0c91932b646bdc.mockapi.io/api/v1/users/'+item.userId)
+    if(error){
+      console.log(error);
+    }
+            
+    const likeIcon = postData.liked ? 'heart' : 'heart-outline'
+    const likeIconColor = postData.liked ? '#C00C86' : 'black'
+    const favIcon = postData.fav ? 'star' : 'star-outline'
+    const favIconColor = postData.fav? '#C00C86' : 'black'
+    let likeText 
+    let commentText
 
-const commentArray = postData.comments
-const commentCount= commentArray.length
-if (likeCount == '1'){
-    likeText = '1 Like'
-}else if ( likeCount > 1){
-    likeText = likeCount + ' Likes';
-}else {
-    likeText = 'like';
-}
-if (commentCount == '1'){
-    commentText = '1 Comment'
-}else if ( commentCount > 1){
-    commentText = commentCount + ' Comments';
-}else {
-    commentText = 'Comment';
-}
+    const likeArray = postData.likes
+    const likeCount = likeArray.length
 
-return (
-    <>
-    <Modal
-     isVisible={modalLikeVisible}
-     onSwipeComplete={()=>setModalLikeVisible(false)}
-     onBackButtonPress={()=>setModalLikeVisible(false)}
-     swipeDirection={['up','down','right','left']}
-     >
-      <ModalContainer  >
-        <FlatList
-        ListHeaderComponent={<ListHeaderContainer>
-          <Text style={{color:'white'}}>usuarios que les gusta esta publicacion</Text>
-          </ListHeaderContainer>}       
-        style={{width:'100%', padding:20,}}
-        data={likeArray}
-        renderItem={({item})=>(
-        <ModalItem>
-          <Text>{item.nombre}</Text>
-        </ModalItem>)
-          }
-          keyExtractor={item => item.id}
-        ></FlatList>
-        
-      </ModalContainer>
-    </Modal>
+    const commentArray = postData.comments
+    const commentCount= commentArray.length
+
+    function truncateString(str, num) {
+      if (str.length <= num) {
+        return str
+      }
+      return str.slice(0, num) + '...'
+    };
+
+    if (likeCount == '1'){
+        likeText = '1 Like'
+    }else if ( likeCount > 1){
+        likeText = likeCount + ' Likes';
+    }else {
+        likeText = 'like';
+    }
+    if (commentCount == '1'){
+        commentText = '1 Comment'
+    }else if ( commentCount > 1){
+        commentText = commentCount + ' Comments';
+    }else {
+        commentText = 'Comment';
+    }
+    return (
     
-    <Modal 
-    isVisible={modalCommentVisible}
-    onSwipeComplete={()=>setModalCommentVisible(false)}
-    onBackButtonPress={()=>setModalCommentVisible(false)}
-    swipeDirection={['up','down','right','left']}
-    >
-      <ModalContainer >
-      <FlatList
-        ListHeaderComponent={
-          <ListHeaderContainer>
-            <Text style={{color:'white'}}>Comentarios de esta publicacion</Text>
-          </ListHeaderContainer>}   
-        data={commentArray}
-        renderItem={({item})=>(
-        <ModalItem>
-          <Text>{item.nombre}</Text>
-          <Text>{item.comment}</Text>
-        </ModalItem>)
-          }
-          keyExtractor={item => item.id}
-        ></FlatList>
-      </ModalContainer>
-    </Modal>
     <Card>
+      {loading ? <ActivityIndicator/> :<>
       <UserInfo
       onPress={()=>navigation.navigate('header',{screen:'Profile', params:{user_id: postData.userId}})}
       >
-        <UserImg source={{uri: `${item.userImg}`}} ></UserImg>
+        <UserImg source={{uri: `${data.userImg}`}} ></UserImg>
         <UserInfoText>  
-          <UserName>{item.userName}</UserName>
+          <UserName>{data.userName}</UserName>
           <PostTime>{postData.createdAt}</PostTime>
         </UserInfoText> 
         <Opciones onPress={()=>alert('Opciones de pubblicacion')}>
           <Ionicons name='ellipsis-vertical' size={25} />
         </Opciones> 
       </UserInfo>
+      <TouchableOpacity 
+            onPress={()=>navigation.navigate('header',{screen:'Post', params:{user_id: postData.userId, post_id: postData.id}})}
+
+      >
       <PostText>
-        {postData.post}
+        {truncateString(postData.desc,100)}
       </PostText>
         {postData.postImg != 'none' ?  <PostImg source={{uri: `${postData.postImg}`}} />: <Divider/>}
+      </TouchableOpacity>
         <EstadisticaWrapper>
-          <TouchableOpacity onPress={()=>setModalLikeVisible(true)}>
             <EstadisticaText>{likeText}</EstadisticaText>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={()=>setModalCommentVisible(true)}>
             <EstadisticaText>{commentText}</EstadisticaText>
-          </TouchableOpacity>
         </EstadisticaWrapper>
       <InteractionWrapper >
         <Interaction onPress={()=>{}} active ={postData.liked}>
@@ -146,8 +108,10 @@ return (
           <InteractionText active={postData.fav}> Favorito </InteractionText>
         </Interaction>
       </InteractionWrapper>
+</> 
+}
     </Card>
-    </>
+  
 
   )
 }

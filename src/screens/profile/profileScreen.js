@@ -144,7 +144,8 @@ const ProfileScreen = ({route, navigation}) => {
       </View>
 }
       data={posts}
-      renderItem={({item}) => <ProfileCard item={item}/>}
+      renderItem={({item}) => <ProfileCard item={item}
+        navigation={navigation}/>}
       keyExtractor={item => item.id}
       showsVerticalScrollIndicator ={false}
       numColumns={2}
