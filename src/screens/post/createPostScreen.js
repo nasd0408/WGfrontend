@@ -12,6 +12,8 @@ const PostScreen = () => {
   const [desc, setDesc] = useState('');
   const [tags, setTags] = useState('')
   const [userData, setUserData] = useState([])
+  const [loading, setLoading] = useState(false)
+  const [imageData, setImageData] = useState()
 
 
   const [token, setToken] = useState(null)
@@ -29,7 +31,8 @@ const PostScreen = () => {
   let config ={
     headers:{
       "Accept":"application/json",
-      "Authorization": 'Bearer '+token
+      "Authorization": 'Bearer '+token,
+      
     }}
 
     useEffect(()=>{
@@ -42,24 +45,68 @@ const PostScreen = () => {
         
       }
     },[token])
-  const handleSubmit = () =>{
+    const getMimeType = (ext) => {
+      // mime type mapping for few of the sample file types
+      switch (ext) {
+        case 'pdf': return 'application/pdf';
+        case 'jpg': return 'image/jpeg';
+        case 'jpeg': return 'image/jpeg';
+        case 'png': return 'image/png';
+      }
+    }
+    const uploadFile = async () => {
+      if(image){
+        const fileUri =image;
+        let filename = fileUri.split('/').pop();
+   
+        const extArr = /\.(\w+)$/.exec(filename);
+        const type = getMimeType(extArr[1]);
 
+        setLoading(true)
+
+        let formData = new FormData();
+   
+        formData.append('file', { uri: fileUri, name: filename, type });
+   
+        const response = await fetch("https://medinajosedev.com/public/api/imagen/publicacion", {
+          method: 'POST',
+          body: formData,
+          headers: {
+            'content-type': 'multipart/form-data',
+            "Accept":"application/json",
+            "Authorization": 'Bearer '+token,
+            
+          },
+        });
+        setLoading(false)
+        const responseAgain = await response.json();
+        setImageData(responseAgain.file)
+        console.log(imageData);
+
+        return response;
+      }
+  
+      
+
+    }
+     
+
+
+    const handleSubmit = () =>{
     const postData={
-      created_at: new Date(),
-      updated_at: new Date(),
       descripcion: desc,
-      imagen: image,
+      imagen:imageData,
       user_id: userData.id,
       nro_likes:0,
       nro_comentarios:0,
       isLiked:false,
       isFavorite:false,
-      estado:1,
       etiquetas:tags,
       user: userData,
       
     };
-    axios.post("https://medinajosedev.com/public/api/publicaciones/", postData, config)
+    console.log(postData);
+    axios.post("https://medinajosedev.com/public/api/publicaciones", postData, config)
     .then((response)=> {
       console.log(response.status);
       console.log(response.data);
@@ -120,9 +167,13 @@ const PostScreen = () => {
           <ActionButton.Item buttonColor='#1D13A4' title="Elige desde galeria!" onPress={pickImage}>
             <Icon name="md-images-outline" style={styles.actionButtonIcon} />
           </ActionButton.Item>
-          <ActionButton.Item buttonColor='#F77F00' title="Publica!" onPress={handleSubmit}>
+          <ActionButton.Item buttonColor='#F77F00' title="Upload!" onPress={uploadFile}>
             <Icon name="md-create-outline" style={styles.actionButtonIcon} />
           </ActionButton.Item>
+          {imageData&& <ActionButton.Item buttonColor='#F77F00' title="Publica!" onPress={handleSubmit}>
+            <Icon name="md-create-outline" style={styles.actionButtonIcon} />
+
+            </ActionButton.Item>}
         </ActionButton>
    </View>  )
 }

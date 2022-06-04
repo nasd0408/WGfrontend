@@ -57,10 +57,10 @@ const ProfileScreen = ({route, navigation}) => {
           <Text style={styles.userBio}>{userData.bio}</Text>
           <View style={styles.stats}>
             
-            <TouchableOpacity>
+            <TouchableOpacity onPress={()=>navigation.navigate('header',{screen:'FriendList', params:{user_id: userData.id}})}>
               <View style={styles.statItem}>
                 <Text>Amigos</Text>
-              <Text>{userData.followingNumber}</Text>
+              <Text>1</Text>
               </View>
             </TouchableOpacity>
             <TouchableOpacity>

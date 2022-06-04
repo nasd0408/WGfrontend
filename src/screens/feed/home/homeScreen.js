@@ -32,7 +32,7 @@ const HomeScreen = ({ navigation }) => {
   useEffect(() => {
     if (token===null){}
     else {
-    axios.get('https://medinajosedev.com/public/api/publicaciones/feed', config)
+    axios.get('https://medinajosedev.com/public/api/publicaciones/', config)
     .then(response => {setData(response.data)})
     .catch(e=>console.error(e))
     .finally(()=>setLoading(false))}

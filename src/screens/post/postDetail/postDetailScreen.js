@@ -37,17 +37,16 @@ const PostDetailScreen = ({route,navigation}) => {
         
         axios.get('https://medinajosedev.com/public/api/megusta/publicacion/'+route.params.post_id, config)
         .then(response => {setLikes(response.data)
-            console.log(likes);
         })
         .catch(e=>console.error(e))
         .finally(()=>setIsLoading(false))
         
 
       },[])
-    const likeIcon = data.isLiked ? 'heart' : 'heart-outline'
-    const likeIconColor = data.isLiked ? '#C00C86' : 'black'
-    const favIcon = data.isFavorite ? 'star' : 'star-outline'
-    const favIconColor = data.isFavorite? '#C00C86' : 'black'
+    const likeIcon = route.params.isLiked ? 'heart' : 'heart-outline'
+    const likeIconColor = route.params.isLiked ? '#C00C86' : 'black'
+    const favIcon = route.params.isFavorite ? 'star' : 'star-outline'
+    const favIconColor = route.params.isFavorite? '#C00C86' : 'black'
     
     const ChoseRender =(item)=>{
         if (selection){
