@@ -51,17 +51,17 @@ const EditProfileScreen = ({ route, navigation }) => {
           marginBottom: 10,
         }}
       >
-        {i18n.t("editProfile")}
+        {i18n.t("profile.editProfile")}
       </Text>
       <FormInput
         labelValue={inputs.name}
-        placeHolderText='Nombre y apellido'
+        placeHolderText={i18n.t("profile.fullname")}
         iconType='user'
         autoCorrect={false}
       />
       <FormInput
         labelValue={inputs.cedula}
-        placeHolderText='Numero de identificacion (CI)'
+        placeHolderText={i18n.t("profile.identificationNumber")}
         iconType='idcard'
         keyboardType='numeric'
         onChangeText={subscribe("cedula")}
@@ -92,7 +92,7 @@ const EditProfileScreen = ({ route, navigation }) => {
 
       <FormInput
         labelValue={inputs.email}
-        placeHolderText='Correo electronico'
+        placeHolderText= {i18n.t("profile.email")}
         iconType='mail'
         keyboardType='email-address'
         autoCapitalize='none'
@@ -103,11 +103,11 @@ const EditProfileScreen = ({ route, navigation }) => {
       <FormInput
         labelValue={inputs.password}
         onChangeText={subscribe("password")}
-        placeHolderText='Contraseña'
+        placeHolderText={i18n.t("profile.password")}
         iconType='lock'
         secureTextEntry={true}
       />
-      <FormButton buttonTitle='Actualizar' onPress={handleSubmit} />
+      <FormButton buttonTitle={i18n.t("actions.update")} onPress={handleSubmit} />
     </View>
   );
 };

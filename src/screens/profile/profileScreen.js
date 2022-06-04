@@ -2,6 +2,7 @@ import { ActivityIndicator, Image,  Text, View, FlatList, TouchableOpacity, Aler
 import React, { useEffect, useState } from 'react'
 import ProfileCard from '../../components/profile/profileCard/profileCard'
 import styles from './profileScreenStyles'
+import i18n from "../../i18n/i18n"
 import ProfileHeader from '../../components/profile/profileHeader/profileHeader'
 const ProfileScreen = ({route, navigation}) => {
   const userInfo = {
@@ -122,19 +123,19 @@ const ProfileScreen = ({route, navigation}) => {
             <TouchableOpacity>
               <View style={styles.statItem}>
 
-                <Text>Followers</Text>
+                <Text>{i18n.t("profile.followers")}</Text>
                 <Text>{userData.followersNumber}</Text>
               </View>
             </TouchableOpacity>
             <TouchableOpacity>
               <View style={styles.statItem}>
-                <Text>Following</Text>
+                <Text>{i18n.t("profile.followers")}</Text>
               <Text>{userData.followingNumber}</Text>
               </View>
             </TouchableOpacity>
             <TouchableOpacity>
               <View style={styles.statItem}>
-                <Text>Posts</Text>
+                <Text>{i18n.t("posts.posts")}</Text>
               <Text> {posts.length} </Text>
               </View>
             </TouchableOpacity>

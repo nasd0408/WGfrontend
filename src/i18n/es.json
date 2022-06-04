@@ -1,3 +1,25 @@
 {
-    "editProfile": "Editar Perfil"
+    "profile": {
+        "editProfile": "Editar Perfil",
+        "name": "Nombre",
+        "surname": "Apellido",
+        "fullname": "Nombre y Apellido",
+        "identificationNumber": "Numero de identificacion",
+        "email": "Email",
+        "password": "Contraseña",
+        "birthday": "Fecha de Cumpleaños",
+        "followers": "Seguidores",
+        "following": "Siguiendo",
+        "addFriends": "Añadir amigos"
+    },
+    "actions": {
+        "update": "Actualizar",
+        "cancel": "Cancelar",
+        "confirm": "Confirmar"
+    },
+    "configuration": "Configuracion",
+    "posts": {
+        "posts": "Publicaciones",
+        "post": "Publicacion"
+    }
 }

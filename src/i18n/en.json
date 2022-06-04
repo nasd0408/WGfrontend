@@ -1,3 +1,25 @@
 {
-    "editProfile": "Edit Profile"
+    "profile": {
+        "editProfile": "Edit Profile",
+        "name": "Name",
+        "surname": "Surname",
+        "fullname": "Fullname",
+        "identificationNumber": "identification Number",
+        "email": "Email",
+        "password": "Password",
+        "birthday": "Birthday",
+        "followers": "Followers",
+        "following": "Following",
+        "addFriends": "Add Friends"
+    },
+    "actions": {
+        "update": "Update",
+        "cancel": "Cancel",
+        "confirm": "Confirm"
+    },
+    "configuration": "Configuration",
+    "posts": {
+        "posts": "Posts",
+        "post": "Post"
+    }
 }
