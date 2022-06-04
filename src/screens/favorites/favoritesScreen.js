@@ -2,24 +2,45 @@ import SearchItem from '../../components/search/searchItem/searchItem'
 import { ActivityIndicator, FlatList, } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { Container } from './favoritesScreenStyles'
+import * as SecureStore from 'expo-secure-store'
+import axios from 'axios'
 
 
 
 const FavoritesScreen = ({navigation}) => {
+
   
   const [isLoading, setLoading] = useState(true);
   const [data, setData] = useState([]);
-
-    
+  const [token, setToken] = useState(null)
+  async function getValueFor(key) {
+    let result = await SecureStore.getItemAsync(key);
+    if (result) {
+     setToken(result);
+    } else {
+      alert('No values stored under that key.');
+    }
+  }
   useEffect(()=>{
-    fetch('https://62918ba8cd0c91932b646bdc.mockapi.io/api/v1/users')
-      .then ((Response) => Response.json())
-      .then((responseJson) => {
-        setData(responseJson.map(item=>item.posts).flat())
-      })
-      .catch((error)=>console.error(error))
-      .finally(()=>setLoading(false))
+    getValueFor('userToken')
   },[])
+  let config ={
+    headers:{
+      "Accept":"application/json",
+      "Authorization": 'Bearer '+token
+    }}
+
+    useEffect(()=>{
+      if (token===null){
+
+      }else {
+        axios.get('https://medinajosedev.com/public/api/publicaciones', config)
+        .then(response => {setData(response.data)})
+        .catch(e=>console.error(e))
+        .finally(()=>setLoading(false))
+      }
+    },[token])
+    
 
   
 
@@ -31,6 +52,7 @@ const FavoritesScreen = ({navigation}) => {
         data={data}
         renderItem={({item}) => <SearchItem item={item}
           navigation={navigation}
+          token={token}
         />}
         keyExtractor={item => item.id}
         showsVerticalScrollIndicator ={false}

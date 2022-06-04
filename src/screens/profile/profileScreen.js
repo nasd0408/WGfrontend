@@ -84,6 +84,12 @@ const ProfileScreen = ({route, navigation}) => {
       numColumns={2}
       columnWrapperStyle={{flex:1, justifyContent:'space-around'}}
       style={{backgroundColor:'#E6EAF4'}}
+      ListEmptyComponent={
+        <View style={{width:'60%',alignSelf:'center', backgroundColor:'#5D08DA', padding:10, height:200, justifyContent:'center', borderRadius:20}}>
+
+          <Text style={{fontSize:18, width:'100%', fontWeight:'bold', color:'#E6EAF4', textAlign:'center'}}>Ups, no hay publicaciones para mostrar</Text>
+        </View>
+      }
       />
  )
 }

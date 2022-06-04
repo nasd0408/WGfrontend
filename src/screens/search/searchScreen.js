@@ -1,4 +1,4 @@
-import {ActivityIndicator, FlatList } from 'react-native'
+import {ActivityIndicator, FlatList,View,Text } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { Container, SearchBar } from './searchScreenStyles'
 import SearchItem from '../../components/search/searchItem/searchItem'
@@ -71,6 +71,12 @@ const SearchScreen = ({navigation}) => {
       showsVerticalScrollIndicator ={false}
       numColumns={2}
       columnWrapperStyle={{flex:1, justifyContent:'space-around'}}
+      ListEmptyComponent={
+        <View style={{width:'100%', backgroundColor:'#E6EAF4', padding:10, height:300, justifyContent:'center', borderRadius:20}}>
+
+          <Text style={{fontSize:18, width:'100%'}}>Ups, no hay publicaciones para mostrar</Text>
+        </View>
+      }
       />
 
     }

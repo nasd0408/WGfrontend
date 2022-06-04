@@ -1,30 +1,70 @@
-import {  Image, View, Platform, TextInput, Text } from 'react-native'
+import {  Image, View, TextInput, Text } from 'react-native'
 import React, { useState, useEffect } from 'react';
 import styles from './createPostScreenStyles'
 import * as ImagePicker from 'expo-image-picker';
 import axios from 'axios';
 import ActionButton from 'react-native-action-button';
 import Icon from 'react-native-vector-icons/Ionicons'
+import * as SecureStore from 'expo-secure-store'
 
 const PostScreen = () => {
   const [image, setImage] = useState(null);
   const [desc, setDesc] = useState('');
   const [tags, setTags] = useState('')
-  const createdAt = new Date()
+  const [userData, setUserData] = useState([])
 
-  const handleSubmit = (e) =>{
-    e.preventDefault();
+
+  const [token, setToken] = useState(null)
+  async function getValueFor(key) {
+    let result = await SecureStore.getItemAsync(key);
+    if (result) {
+     setToken(result);
+    } else {
+      alert('No values stored under that key.');
+    }
+  }
+  useEffect(()=>{
+    getValueFor('userToken')
+  },[])
+  let config ={
+    headers:{
+      "Accept":"application/json",
+      "Authorization": 'Bearer '+token
+    }}
+
+    useEffect(()=>{
+      if (token===null){
+
+      }else {
+        axios.get('https://medinajosedev.com/public/api/usuarios/yo', config)
+        .then(response => {setUserData(response.data)})
+        .catch(e=>console.error(e))
+        
+      }
+    },[token])
+  const handleSubmit = () =>{
+
     const postData={
-      postImg: image,
-      desc: desc,
-      createdAt: createdAt,
-      tags:tags,
+      created_at: new Date(),
+      updated_at: new Date(),
+      descripcion: desc,
+      imagen: image,
+      user_id: userData.id,
+      nro_likes:0,
+      nro_comentarios:0,
+      isLiked:false,
+      isFavorite:false,
+      estado:1,
+      etiquetas:tags,
+      user: userData,
       
     };
-    axios.post("Api***", postData).then((response)=> {
+    axios.post("https://medinajosedev.com/public/api/publicaciones/", postData, config)
+    .then((response)=> {
       console.log(response.status);
       console.log(response.data);
     })
+    .catch(e=>console.error(e))
   }
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library

@@ -1,4 +1,4 @@
-import { ActivityIndicator, FlatList, Button } from 'react-native'
+import { ActivityIndicator, FlatList, Text, View } from 'react-native'
 import React ,{useState, useEffect}from 'react'
 import PostCard from '../../../components/feed/postCard/postCard'
 import { Container } from './homeScreenStyles'
@@ -32,7 +32,7 @@ const HomeScreen = ({ navigation }) => {
   useEffect(() => {
     if (token===null){}
     else {
-    axios.get('https://medinajosedev.com/public/api/publicaciones', config)
+    axios.get('https://medinajosedev.com/public/api/publicaciones/feed', config)
     .then(response => {setData(response.data)})
     .catch(e=>console.error(e))
     .finally(()=>setLoading(false))}
@@ -55,6 +55,12 @@ const HomeScreen = ({ navigation }) => {
           }
             keyExtractor={item => item.id}
               showsVerticalScrollIndicator={false}
+              ListEmptyComponent={
+              <View style={{width:'100%', backgroundColor:'#E6EAF4', padding:10, height:300, justifyContent:'center', borderRadius:20}}>
+
+                <Text style={{fontSize:18, width:'100%'}}>Ups, no hay publicaciones para mostrar</Text>
+              </View>
+            }
         /> } 
         </Container>
     </>
