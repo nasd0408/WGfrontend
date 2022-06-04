@@ -6,9 +6,9 @@ import PostScreen from "../../../screens/post/createPostScreen";
 
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import Header from "../../../components/general/header/header";
 const Tab = createBottomTabNavigator();
 const TabStack = () => {
+
 return (
         <Tab.Navigator 
             
@@ -47,10 +47,10 @@ return (
                 headerShown:false,
             })}
         >
-            <Tab.Screen name="Home" component={HomeScreen}></Tab.Screen>
+            <Tab.Screen name="Home" component={HomeScreen} ></Tab.Screen>
             <Tab.Screen name="Search" component={SearchScreen}></Tab.Screen>
-            <Tab.Screen name="UserProfile" component={ProfileScreen} initialParams={{user_id:"Nico"}}></Tab.Screen>
-            <Tab.Screen name="Post" component={PostScreen}></Tab.Screen>
+            <Tab.Screen name="UserProfile" component={ProfileScreen} initialParams={{user_id:"yo"}}></Tab.Screen>
+            <Tab.Screen name="Post" component={PostScreen} ></Tab.Screen>
         </Tab.Navigator>
 )}
 

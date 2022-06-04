@@ -1,5 +1,4 @@
-import React from 'react'
-import { useFetch } from '../../../hooks/useFetch'
+import React,{useEffect,useState} from 'react'
 import { 
   Card, 
   PostImg, 
@@ -10,25 +9,44 @@ import {
   UserInfoContainer,
 } from './searchStyles'
 
+import axios from 'axios';
+import { ActivityIndicator } from 'react-native';
 
 
-const SearchItem = ({item, navigation}) => {
 
-  const {data, error , loading} = useFetch('https://62918ba8cd0c91932b646bdc.mockapi.io/api/v1/users/' + item.userId )    
+const SearchItem = ({item, navigation,token}) => {
+  let config ={
+    headers:{
+      "Accept":"application/json",
+      "Authorization": 'Bearer '+ token
+    }}
+
+    const [data, setData] = useState([])
+    const [loading, setLoading] = useState(true) 
+
+  useEffect(()=>{
+
+    axios.get('https://medinajosedev.com/public/api/usuarios/'+item.user_id, config)
+    .then(response => {setData(response.data)})
+    .catch(e=>console.error(e))
+    .finally(()=>setLoading(false))
+
+  },[]);
   return (
     <Card>
+      {loading? <ActivityIndicator/>:
       <TouchableContainer     
-        onPress={()=>navigation.navigate('header',{screen:'Post', params:{user_id: item.userId, post_id: item.id}})}
+        onPress={()=>navigation.navigate('header',{screen:'Post', params:{user_id: item.user_id, post_id: item.id, token:token}})}
 
       >
 
         <UserInfoContainer>
-            <UserInfo>{data.userName}</UserInfo>
-            <PostTime>{item.createdAt}</PostTime>
+            <UserInfo>{data.name}</UserInfo>
+            <PostTime>{item.created_at}</PostTime>
         </UserInfoContainer>
-        {item.postImg != 'none' ? <PostImg source={{uri: `${item.postImg}`}}/>: <PostText>{item.desc}</PostText>}
-        <PostText>{item.desc.substring(0,35).concat('...')}</PostText>
-      </TouchableContainer>
+        {item.imagen != 'none' ? <PostImg source={{uri: `${item.imagen}`}}/>: <PostText>{item.descripcion}</PostText>}
+        <PostText>{item.descripcion.substring(0,35).concat('...')}</PostText>
+      </TouchableContainer>}
     </Card>
   )
 }

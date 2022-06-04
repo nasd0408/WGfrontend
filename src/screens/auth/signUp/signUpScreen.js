@@ -1,59 +1,75 @@
-import { View, Text, TouchableOpacity } from 'react-native'
+import { View, Text, TouchableOpacity, KeyboardAvoidingView} from 'react-native'
 import React, { useState } from 'react'
 import FormInput from '../../../components/auth/formInput/formInput'
 import FormButton from '../../../components/auth/formButton/formButton'
-import SocialButton from '../../../components/auth/socialButton/socialButton'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import styles from './signUpScreenStyles'
-import DateTimePickerModal from "react-native-modal-datetime-picker";
+import * as ImagePicker from 'expo-image-picker';
 import useForm from '../../../hooks/useForm'
+import axios from 'axios'
+import * as SecureStore from 'expo-secure-store'
+
+
+
 const SignupScreen = ({navigation}) => {
   const [changed, setChanged] = useState(false)
   const [openFecha, setOpenfecha] = useState(false)
+const pickImage = async () => {
+    // No permissions request is necessary for launching the image library
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    console.log(result);
+
+    if (!result.cancelled) {
+      initialState.imagen=(result.uri);
+    }
+  };
   const initialState ={
+    name:'',
     email:'',
     password:'',
-    name:'',
-    date:new Date,
-    cedula:'',
+    password_confirmation:'',
+    telefono:'',
+    bio:'',
+    gustos:'',
+    imagen:'https://medinajosedev.com/public/storage/perfil0.jpg',
+    estado:1,
+  }
+  let config ={
+    headers:{
+      "Accept":"application/json"
+    }
   }
   const onSubmit= values => {
-    console.log(values);
+    axios.post('https://medinajosedev.com/public/api/registro', values , config)
+    .then(response=> (SecureStore.setItemAsync('secure_token',response.data.token)))
+    .catch((e)=> console.error(e))
+
   }
   const {subscribe, inputs, handleSubmit} = useForm(initialState,onSubmit)
   return (
-<View style={styles.container}>
-        <Ionicons name="game-controller" size={50} color='white' style={{ padding:5}} />
-        <Text style={{fontSize:20,color:'white' ,fontWeight:'100', marginBottom:10}}>Registrate </Text>
-        <FormInput
-        labelValue={inputs.name}
-        placeHolderText="Nombre y apellido"
-        iconType="user"
-        autoCorrect={false}
-        onChangeText= {subscribe('name')}
-        />
-        <FormInput
-        labelValue={inputs.cedula}
-        placeHolderText="Numero de identificacion (CI)"
-        iconType="idcard"
-        keyboardType="numeric"
-        onChangeText= {subscribe('cedula')}
-        />
+    <KeyboardAvoidingView
+        contentContainerStyle={{ flexGrow: 1 }}
+        style={styles.container}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'position'}
+        keyboardVerticalOffset={Platform.OS === 'android' ? -50 : 25}>
 
-        <TouchableOpacity style={styles.fechaContainer}
-        onPress={()=>setOpenfecha(true)}
-        >
-          <Ionicons name='calendar-outline' size={25} style={styles.iconStyle}/>
-          <Text style={changed ?styles.fecha: styles.unchangedFecha} >{ changed ? inputs.date.toISOString().substring(0,10) : 'fecha de nacimiento'} </Text>
-        </TouchableOpacity>
-       
-       <DateTimePickerModal
-       isVisible={openFecha}
-       mode='date'
-       onConfirm={(fecha)=>{subscribe('date'); setChanged(true); setOpenfecha(false)}}
-       onCancel={()=>setOpenfecha(false)}
-       />
-       
+      <View style={styles.inner}>
+          <Ionicons name="game-controller" size={50} color='white' style={{ padding:5}} />
+          <Text style={{fontSize:20,color:'white' ,fontWeight:'100', marginBottom:10}}>Registrate </Text>
+          <FormInput
+          labelValue={inputs.name}
+          placeHolderText="Nombre y apellido"
+          iconType="user"
+          autoCorrect={false}
+          onChangeText= {subscribe('name')}
+          />
+
         <FormInput
         labelValue={inputs.email}
         placeHolderText="Correo electronico"
@@ -63,38 +79,56 @@ const SignupScreen = ({navigation}) => {
         autoCorrect={false}
         onChangeText= {subscribe('email')}
         />
+      
+          <FormInput
+              labelValue={inputs.password}
+              onChangeText= {subscribe('password')}
+              placeHolderText="Contraseña"
+              iconType="lock"
+              secureTextEntry={true}
+          />
+          <FormInput
+              labelValue={inputs.password_confirmation}
+              onChangeText= {subscribe('password_confirmation')}
+              placeHolderText="Contraseña"
+              iconType="lock"
+              secureTextEntry={true}
+          />
+          <FormInput
+              labelValue={inputs.telefono}
+              onChangeText= {subscribe('telefono')}
+              placeHolderText="Telefono"
+              iconType="phone"
+              />
+          <FormInput
+              labelValue={inputs.bio}
+              onChangeText= {subscribe('bio')}
+              placeHolderText="Biografia"
+              iconType="form"
+              />
+          <FormInput
+              labelValue={inputs.gustos}
+              onChangeText= {subscribe('gustos')}
+              placeHolderText="Gustos"
+              iconType="hearto"
+              />
 
-        <FormInput
-            labelValue={inputs.password}
-            onChangeText= {subscribe('password')}
-            placeHolderText="Contraseña"
-            iconType="lock"
-            secureTextEntry={true}
-        />
-        <FormButton
-            buttonTitle="Registrarte"
-            onPress = {handleSubmit}
-        />
-        <SocialButton
-        buttonTitle={"Registrate con Facebook"}
-        btnType="facebook"
-        color="#4867aa"
-        backgroundColor={"#e6eaf4"}
-        onPress={()=>{}}
-      />
+          <FormButton
+              buttonTitle="Elegir Imagen"
+              onPress = {pickImage}
+          />
 
-      <SocialButton
-        buttonTitle={"Registrate con Google"}
-        btnType="google"
-        color="#de4d41"
-        backgroundColor={"#f4e7ea"}
-        onPress={()=>{}}
-      />
+          <FormButton
+              buttonTitle="Registrarte"
+              onPress = {handleSubmit}
+          />
+        
 
-    <TouchableOpacity style={styles.forgotButton} onPress={()=> {navigation.goBack()}}>
-        <Text style={styles.navButtonText}> Ya tienes una cuenta? Inicia sesión aqui!</Text>
-    </TouchableOpacity>
-    </View>
+            <TouchableOpacity style={styles.forgotButton} onPress={()=> {navigation.goBack()}}>
+                <Text style={styles.navButtonText}> Ya tienes una cuenta? Inicia sesión aqui!</Text>
+            </TouchableOpacity>
+          </View>
+        </KeyboardAvoidingView>
   )
 }
 

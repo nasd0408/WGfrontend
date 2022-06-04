@@ -1,18 +1,22 @@
 import { Text, View, TouchableOpacity } from 'react-native'
-import React, { useState } from 'react'
+import * as React from 'react'
 import FormInput from '../../../components/auth/formInput/formInput'
 import FormButton from '../../../components/auth/formButton/formButton'
-import SocialButton from '../../../components/auth/socialButton/socialButton'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import styles from './loginScreenStyles'
 import useForm from '../../../hooks/useForm'
+import axios from 'axios'
+import * as SecureStore from 'expo-secure-store'
+import AuthContext from '../../../navigation/context/AuthContext'
 const LoginScreen = ({navigation}) => {
-    const initialState ={
-      email:'',
+  const {signIn} = React.useContext(AuthContext)
+  const initialState ={
+    email:'',
       password:'',
     }
+    
     const onSubmit= values => {
-      console.log(values);
+      signIn(values)
     }
     const {subscribe, inputs, handleSubmit} = useForm(initialState,onSubmit)
   return (
@@ -41,21 +45,7 @@ const LoginScreen = ({navigation}) => {
             buttonTitle="Iniciar Sesion"
             onPress = {handleSubmit}
         />
-        <SocialButton
-        buttonTitle={"Inicia sesión con Facebook"}
-        btnType="facebook"
-        color="#4867aa"
-        backgroundColor={"#e6eaf4"}
-        onPress={()=>{navigation.replace('app',{screen:'Home'})}}
-      />
 
-      <SocialButton
-        buttonTitle={"Inicia sesión con Google"}
-        btnType="google"
-        color="#de4d41"
-        backgroundColor={"#f4e7ea"}
-        onPress={()=>{}}
-      />
 
     <TouchableOpacity style={styles.forgotButton} onPress={()=> {navigation.navigate('signUp')}}>
         <Text style={styles.navButtonText}> No tienes una cuenta? Creala aqui!</Text>

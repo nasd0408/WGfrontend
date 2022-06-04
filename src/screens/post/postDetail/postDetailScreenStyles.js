@@ -5,7 +5,7 @@ const  styles = StyleSheet.create({
     container: {
         backgroundColor: '#E6EAF4',
         width:'100%',
-        paddingHorizontal:20
+        paddingHorizontal:20,
     },
     title:{
         fontSize:20,
@@ -53,6 +53,19 @@ const  styles = StyleSheet.create({
         justifyContent:'space-around',
         margin:10,
     },
+    commentsList:{
+        marginTop:5,
+        borderBottomColor:'#04030F',
+        borderBottomWidth:1
+    },
+    commentName:{
+        fontSize:14,
+        fontWeight:'bold',
+        color:'#04030F'
+    },  
+    FlatList:{
+        marginBottom:20,
+    }
 
 })
 

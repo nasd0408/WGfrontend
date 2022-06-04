@@ -6,8 +6,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 20,
     backgroundColor: '#060422',
-    height: windowHeight
+    height: windowHeight,
+    flex:1,
   },
+  inner:{
+    alignItems:'center'
+  },
+
   forgotButton: {
     marginVertical: 35,
   },

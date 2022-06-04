@@ -1,19 +1,18 @@
-import { View, Text } from 'react-native'
 import React from 'react'
 import { Card, PostImg, PostText, PostTime, TouchableContainer, UserInfo, UserInfoContainer } from './profileSyles'
 
 
-const ProfileCard = ({item, navigation}) => {
+const ProfileCard = ({item, navigation, token}) => {
   return (
     <Card>
     <TouchableContainer 
-            onPress={()=>navigation.navigate('header',{screen:'Post', params:{user_id: item.userId, post_id: item.id}})}
+            onPress={()=>navigation.navigate('header',{screen:'Post', params:{user_id: item.user_id, post_id: item.id, token:token}})}
             >
 
       <UserInfoContainer>
-          <PostTime>{item.createdAt}</PostTime>
+          <PostTime>{item.created_at}</PostTime>
       </UserInfoContainer>
-      {item.postImg != 'none' ? <PostImg source={{uri: `${item.postImg}`}}/>: <PostText>{item.desc}</PostText>
+      {item.imagen != 'none' ? <PostImg source={{uri: `${item.imagen}`}}/>: <PostText>{item.descripcion}</PostText>
   }
   </TouchableContainer>
   </Card>

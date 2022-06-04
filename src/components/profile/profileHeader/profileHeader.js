@@ -1,17 +1,26 @@
 import { View, Text,TouchableOpacity } from 'react-native'
-import React from 'react'
+import React,{useContext} from 'react'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import styles from './profileHeaderStyles'
 import i18n from "../../i18n/i18n"
+import AuthContext from '../../../navigation/context/AuthContext'
 export default  ProfileHeader=({self,  navigation, userData} )=> {
-   if(self === "Nico"){
+  const {signOut} = useContext(AuthContext)
+   if(self === "yo"){
        return (
         <View style= {styles.header}>
           
-          <TouchableOpacity >
+          <TouchableOpacity onPress={signOut}>
             <View style={styles.buttonContainer}>
                 <Text style={styles.buttonText}>{i18n.t("configuration")}</Text>
                 <Ionicons name='settings-outline' size={30} color='#E6EAF4'/>
+            </View>
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={signOut}>
+            <View style={styles.buttonContainer}>
+                <Text style={styles.buttonText}>Cerrar Sesion</Text>
+                <Ionicons name='exit-outline' size={30} color='#E6EAF4'/>
             </View>
           </TouchableOpacity>
 

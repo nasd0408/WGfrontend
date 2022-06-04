@@ -1,7 +1,7 @@
-import React from 'react'
-import { TouchableOpacity,ActivityIndicator } from 'react-native'
+import axios from 'axios'
+import React,{useEffect, useState} from 'react'
+import { TouchableOpacity,ActivityIndicator,View } from 'react-native'
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import { useFetch } from '../../../hooks/useFetch'
 import { 
   Card, 
   UserInfoText,
@@ -21,28 +21,31 @@ import {
 
 } from '../feedStyles'  
 
-const PostCard = ({item, navigation}) => {
+const PostCard = ({item, navigation, token}) => {
 
-      
+  let config ={
+    headers:{
+      "Accept":"application/json",
+      "Authorization": 'Bearer '+ token
+    }}
+    const [data, setData] = useState([])
+    const [loading, setLoading] = useState(true)      
     const postData = item;
+  useEffect(()=>{
+    axios.get('https://medinajosedev.com/public/api/usuarios/'+item.user_id, config)
+    .then(response => {setData(response.data)})
+    .catch(e=>console.error(e))
+    .finally(()=>setLoading(false))
 
-    const {data, error, loading} = useFetch('https://62918ba8cd0c91932b646bdc.mockapi.io/api/v1/users/'+item.userId)
-    if(error){
-      console.log(error);
-    }
+  },[])
             
-    const likeIcon = postData.liked ? 'heart' : 'heart-outline'
-    const likeIconColor = postData.liked ? '#C00C86' : 'black'
-    const favIcon = postData.fav ? 'star' : 'star-outline'
-    const favIconColor = postData.fav? '#C00C86' : 'black'
+    const likeIcon = postData.isLiked ? 'heart' : 'heart-outline'
+    const likeIconColor = postData.isLiked ? '#C00C86' : 'black'
+    const favIcon = postData.isFavorite ? 'star' : 'star-outline'
+    const favIconColor = postData.isFavorite? '#C00C86' : 'black'
     let likeText 
     let commentText
 
-    const likeArray = postData.likes
-    const likeCount = likeArray.length
-
-    const commentArray = postData.comments
-    const commentCount= commentArray.length
 
     function truncateString(str, num) {
       if (str.length <= num) {
@@ -51,61 +54,66 @@ const PostCard = ({item, navigation}) => {
       return str.slice(0, num) + '...'
     };
 
-    if (likeCount == '1'){
+    if (postData.nro_likes == '1'){
         likeText = '1 Like'
-    }else if ( likeCount > 1){
-        likeText = likeCount + ' Likes';
+    }else if ( postData.nro_likes > 1){
+        likeText = postData.nro_likes + ' Likes';
     }else {
         likeText = 'like';
     }
-    if (commentCount == '1'){
+    if (postData.nro_comentarios == '1'){
         commentText = '1 Comment'
-    }else if ( commentCount > 1){
-        commentText = commentCount + ' Comments';
+    }else if ( postData.nro_comentarios > 1){
+        commentText = postData.nro_comentarios + ' Comments';
     }else {
         commentText = 'Comment';
     }
     return (
     
     <Card>
-      {loading ? <ActivityIndicator/> :<>
+      {loading 
+      ?<View style={{height:300, width:300, justifyContent:'center'}}>
+         <ActivityIndicator size={'large'} color={'#5D08DA'}/>
+      </View> 
+      :<>
       <UserInfo
-      onPress={()=>navigation.navigate('header',{screen:'Profile', params:{user_id: postData.userId}})}
+      onPress={()=>navigation.navigate('header',{screen:'Profile', params:{user_id: postData.user_id, token:token}})}
       >
-        <UserImg source={{uri: `${data.userImg}`}} ></UserImg>
+        <UserImg source={{uri: `${data.imagen}`}} ></UserImg> 
         <UserInfoText>  
-          <UserName>{data.userName}</UserName>
-          <PostTime>{postData.createdAt}</PostTime>
+          <UserName>{data.name}</UserName>
+          <PostTime>{postData.created_at}</PostTime>
         </UserInfoText> 
         <Opciones onPress={()=>alert('Opciones de pubblicacion')}>
           <Ionicons name='ellipsis-vertical' size={25} />
         </Opciones> 
       </UserInfo>
+        
       <TouchableOpacity 
-            onPress={()=>navigation.navigate('header',{screen:'Post', params:{user_id: postData.userId, post_id: postData.id}})}
+            onPress={()=>navigation.navigate('header',{screen:'Post', params:{user_id: postData.user_id, post_id: postData.id, token:token}})}
 
       >
       <PostText>
-        {truncateString(postData.desc,100)}
+        {truncateString(postData.descripcion,100)}
       </PostText>
-        {postData.postImg != 'none' ?  <PostImg source={{uri: `${postData.postImg}`}} />: <Divider/>}
+        {postData.imagen != 'none' ?  <PostImg source={{uri: `${postData.imagen}`}} />: <Divider/>}
       </TouchableOpacity>
         <EstadisticaWrapper>
             <EstadisticaText>{likeText}</EstadisticaText>
             <EstadisticaText>{commentText}</EstadisticaText>
         </EstadisticaWrapper>
       <InteractionWrapper >
-        <Interaction onPress={()=>{}} active ={postData.liked}>
+        <Interaction onPress={()=>{}} active ={postData.isLiked}>
           <Ionicons name={likeIcon} size={25}  color={likeIconColor} />
-          <InteractionText active={postData.liked} >Me gusta</InteractionText>
+          <InteractionText active={postData.isLiked} >Me gusta</InteractionText>
         </Interaction>
         <Interaction onPress={()=>{}}>
           <Ionicons name='md-chatbubble-outline' size={25} />
           <InteractionText>Comentar</InteractionText>
         </Interaction >
-        <Interaction active={postData.fav}>
+        <Interaction active={postData.isFavorite}>
           <Ionicons name={favIcon} size={25} color={favIconColor}/>
-          <InteractionText active={postData.fav}> Favorito </InteractionText>
+          <InteractionText active={postData.isFavorite}> Favorito </InteractionText>
         </Interaction>
       </InteractionWrapper>
 </> 
