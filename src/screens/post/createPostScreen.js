@@ -118,7 +118,7 @@ const PostScreen = () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
-      aspect: [4, 3],
+      aspect: [1, 1],
       quality: 1,
     });
 
@@ -152,6 +152,7 @@ const PostScreen = () => {
         <View style={styles.imageContainer} >
           {image && <Image source={{uri: image}} style={styles.image}/>}
         </View>
+        {loading &&<Text style={[styles.title, {color:'black'}]}>Cargando imagen...</Text>}
       </View>
       <ActionButton buttonColor="#C00C86" offsetY={130}>
           <ActionButton.Item 
